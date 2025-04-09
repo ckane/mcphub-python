@@ -16,6 +16,32 @@ The MCP Hub is designed to accommodate multiple MCP servers, each residing in th
   - **mcp_servers**: Contains details such as the command, arguments, and environment variables required to run each MCP server. This allows clients to fetch and execute servers directly.
   - **mcp_tools**: Stores information about the tools provided by each server, enabling clients to understand and utilize the available functionalities.
 
+## Database Structure
+
+The MCP Hub uses MongoDB to store information about the servers and tools. Here is an overview of the database structure:
+
+### `mcp_servers` Collection
+
+This collection stores the configuration details for each MCP server. Each document in the collection includes:
+
+- **name**: The name of the MCP server.
+- **command**: The command used to start the server.
+- **args**: A list of arguments for the command.
+- **env**: A dictionary of environment variables required by the server.
+- **setup_script**: The script used to set up the server.
+- **server_path**: The file path to the server's directory.
+- **updated_at**: A timestamp indicating when the server configuration was last updated.
+- **status**: The current status of the server (e.g., "active" or "inactive").
+
+### `mcp_tools` Collection
+
+This collection stores information about the tools available from each MCP server. Each document in the collection includes:
+
+- **server_name**: The name of the server providing the tool.
+- **name**: The name of the tool.
+- **description**: A brief description of what the tool does.
+- **updated_at**: A timestamp indicating when the tool information was last updated.
+
 ## Getting Started
 
 ### Prerequisites
@@ -26,7 +52,12 @@ The MCP Hub is designed to accommodate multiple MCP servers, each residing in th
 
 ### Setup
 
-1. **Clone the Repository**: Clone this repository to your local machine.
+1. **Clone the Repository**: Clone this repository into the `vista_mcp_hub` directory from the root of your project:
+
+   ```bash
+   git clone https://dev.azure.com/azurefsoft062/agent-vista-platform/_git/vista-mcp-hub vista_mcp_hub
+   cd vista_mcp_hub
+   ```
 
 2. **Install Dependencies**: Navigate to the project directory and run the following command to install the necessary Python packages using Poetry:
 
@@ -61,11 +92,14 @@ To integrate the MCP Hub with a FastAPI application, follow these steps:
 
 2. **Setup MCP Servers on Startup**: Use FastAPI's startup event to initialize MCP servers and store their configurations.
 
+3. **Validate Environment Variables**: Before using a server, ensure that all required environment variables are set. Use the `validate_server_env` function to check for any unset variables. This function will raise an `EnvironmentError` if any required environment variable is not set.
+
 Here's an example FastAPI application setup:
 
 ```python
 from fastapi import FastAPI
-from mcp_hub import setup_all_servers, store_mcp
+from vista_mcp_hub.mcp_hub import setup_all_servers, store_mcp, setup_server, list_tools
+from vista_mcp_hub.mcp_server_config import list_servers, validate_server_env
 
 app = FastAPI()
 
@@ -76,6 +110,26 @@ async def startup_event():
     
     # Store MCP server and tool data in MongoDB
     await store_mcp()
+
+@app.get("/use-server/{server_name}")
+async def use_server(server_name: str):
+    servers = list_servers()
+    server_config = next((s for s in servers if s.name == server_name), None)
+    
+    if not server_config:
+        return {"error": f"Server '{server_name}' not found."}
+    
+    # Validate environment variables before using the server
+    try:
+        validate_server_env(server_config)
+    except EnvironmentError as e:
+        return {"error": str(e)}
+    
+    # Proceed with using the server
+    # Example: setup the server or list tools
+    await setup_server(server_config)
+    tools = await list_tools()
+    return {"tools": tools[server_name]}
 
 @app.get("/")
 async def read_root():
