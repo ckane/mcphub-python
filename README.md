@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to the MCP Hub project! This project is focused on building a centralized hub for managing Model Context Protocol (MCP) servers, which are essential for developing AI clients that utilize MCP as tools. The MCP Hub provides a standardized way to interact with various MCP servers, making it easier for AI applications to leverage these tools effectively.
+Welcome to the MCP Hub project! This project enables you to deploy and manage your own **Model Context Protocol (MCP) servers locally**. Rather than relying on external MCP services, MCP Hub lets you run MCP servers directly on your infrastructure, giving you full control over your AI tools. The MCP Hub provides a standardized way to deploy, configure and interact with various local MCP servers, making it easier for AI applications to leverage these tools effectively while maintaining data privacy and reducing external dependencies.
 
 ## Project Structure
 
