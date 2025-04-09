@@ -156,23 +156,3 @@ async def get_stored_tools(server_name: Optional[str] = None) -> List[Dict[str, 
     tools_collection = db.mcp_tools
     query = {"server_name": server_name} if server_name else {}
     return await tools_collection.find(query).to_list(None)
-
-# Update main to include storing data
-if __name__ == "__main__":
-    async def main():
-        # Setup all servers
-        await setup_all_servers()
-        
-        # Get and store MCP data
-        await store_mcp()
-        
-        # Display stored data
-        stored_servers = await get_stored_servers()
-        print("\nStored Servers:")
-        for server in stored_servers:
-            print(f"- {server['name']}")
-            stored_tools = await get_stored_tools(server['name'])
-            for tool in stored_tools:
-                print(f"  • {tool['name']}: {tool['description']}")
-    
-    asyncio.run(main())
