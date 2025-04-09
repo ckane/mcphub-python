@@ -46,4 +46,15 @@ def list_servers() -> List[MCPServerConfig]:
         # ),
     ]
     
-    return servers 
+    return servers
+
+def validate_server_env(server_config: MCPServerConfig) -> None:
+    """
+    Validates the environment variables for a given server configuration.
+    Raises an exception if any environment variable is not set.
+    """
+    unset_vars = [key for key, value in server_config.env.items() if value == "NOT SET"]
+    if unset_vars:
+        raise EnvironmentError(
+            f"The following environment variables are not set for server '{server_config.name}': {', '.join(unset_vars)}"
+        ) 
