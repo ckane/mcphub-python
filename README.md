@@ -50,6 +50,10 @@ This collection stores information about the tools available from each MCP serve
 
 - **Poetry**: This project uses Poetry for dependency management. Install Poetry by following the instructions [here](https://python-poetry.org/docs/#installation).
 
+- **uv**: This project uses uv for faster Python package installation. Install uv by following the instructions [here](https://github.com/astral-sh/uv#installation).
+
+- **npm**: Some MCP servers require Node.js and npm. Install Node.js and npm by following the instructions [here](https://nodejs.org/en/download/).
+
 ### Setup
 
 1. **Clone the Repository**: Clone this repository into the `vista_mcp_hub` directory from the root of your project:
