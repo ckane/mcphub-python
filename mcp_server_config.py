@@ -38,6 +38,16 @@ def list_servers() -> List[MCPServerConfig]:
             setup_script="npm install && npm run build",
             server_path=str(base_dir / "mcp-server-azure-devops")
         ),
+        MCPServerConfig(
+            name="azure-storage",
+            description="Azure Storage MCP Server",
+            tags=["azure-storage", "azure"],
+            command="uv",
+            args=["run", "mcp_server_azure_cmd"],
+            env={},
+            setup_script="uv pip install -e .",
+            server_path=str(base_dir / "azure_mcp_server")
+        )
         # Add more servers here as you clone them
         # Example:
         # MCPServerConfig(
@@ -61,4 +71,4 @@ def validate_server_env(server_config: MCPServerConfig) -> None:
     if unset_vars:
         raise EnvironmentError(
             f"The following environment variables are not set for server '{server_config.name}': {', '.join(unset_vars)}"
-        ) 
+        )

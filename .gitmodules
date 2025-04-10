@@ -1,3 +1,6 @@
 [submodule "servers/mcp-server-azure-devops"]
 	path = servers/mcp-server-azure-devops
 	url = https://github.com/Tiberriver256/mcp-server-azure-devops.git
+[submodule "servers/azure_mcp_server"]
+	path = servers/azure_mcp_server
+	url = https://github.com/mashriram/azure_mcp_server.git
