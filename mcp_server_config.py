@@ -6,6 +6,8 @@ from pathlib import Path
 @dataclass
 class MCPServerConfig:
     name: str
+    description: str
+    tags: List[str]
     command: str
     args: List[str]
     env: Dict[str, str]
