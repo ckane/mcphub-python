@@ -23,6 +23,8 @@ def list_servers() -> List[MCPServerConfig]:
     servers = [
         MCPServerConfig(
             name="azure-devops",
+            description="Azure DevOps MCP Server",
+            tags=["azure-devops", "azure"],
             command="node",
             args=["dist/index.js"],
             env={
