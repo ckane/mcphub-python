@@ -55,7 +55,7 @@ This collection stores information about the tools available from each MCP serve
 1. **Clone the Repository**: Clone this repository into the `vista_mcp_hub` directory from the root of your project:
 
    ```bash
-   git clone https://dev.azure.com/azurefsoft062/agent-vista-platform/_git/vista-mcp-hub vista_mcp_hub
+   git clone --recurse-submodules https://dev.azure.com/azurefsoft062/agent-vista-platform/_git/vista-mcp-hub vista_mcp_hub
    cd vista_mcp_hub
    ```
 
