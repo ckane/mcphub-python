@@ -10,14 +10,6 @@ azure-devops-mcp:
 azure-storage-mcp:
   - name: mashriram/azure_mcp_server
     env:
-      # Add any required Azure Storage environment variables here
       AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
-      AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME}
-      AZURE_STORAGE_ACCOUNT_KEY: ${AZURE_STORAGE_ACCOUNT_KEY}
-
-# Add more MCP servers as needed following the same pattern
-# example-mcp:
-#   - name: author/repository-name
-#     env:
-#       ENV_VAR1: value1
-#       ENV_VAR2: value2
+      AZURE_STORAGE_CONTAINER_NAME: ${AZURE_STORAGE_CONTAINER_NAME}
+      AZURE_STORAGE_BLOB_NAME: ${AZURE_STORAGE_BLOB_NAME}

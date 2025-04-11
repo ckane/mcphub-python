@@ -4,7 +4,7 @@ from typing import Optional
 
 from mcp import StdioServerParameters
 
-from mcp_servers import MCPServerConfig, MCPServersParams
+from mcp_servers import MCPServerConfig, MCPServersParams, MCPServers
 
 
 @dataclass
@@ -14,6 +14,7 @@ class MCPHub:
     def __post_init__(self):
         config_path = self._find_config_path()
         self.servers_params = MCPServersParams(config_path)
+        self.servers = MCPServers(self.servers_params)
 
     def _find_config_path(self) -> str:
         current_dir = Path.cwd()

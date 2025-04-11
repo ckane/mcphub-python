@@ -15,6 +15,9 @@ class MCPServerConfig:
     env: Dict[str, str]
     description: Optional[str] = None
     tags: Optional[List[str]] = None
+    repo_url: Optional[str] = None
+    setup_script: Optional[str] = None
+    cwd: Optional[str] = None
     
 class ServerConfigNotFoundError(Exception):
     """Raised when a server configuration is not found."""
@@ -26,7 +29,7 @@ class MCPServersParams:
         self._servers_params = self._load_servers_params()
 
     @property
-    def server_params(self) -> List[MCPServerConfig]:
+    def servers_params(self) -> List[MCPServerConfig]:
         """Return the list of server parameters."""
         return list(self._servers_params.values())
 
@@ -65,6 +68,8 @@ class MCPServersParams:
                     env=server.get("env", {}),
                     description=cmd_info.get("description"),
                     tags=cmd_info.get("tags"),
+                    repo_url=cmd_info.get("repo_url"),
+                    setup_script=cmd_info.get("setup_script")
                 )
             else:
                 raise ServerConfigNotFoundError(
@@ -83,3 +88,6 @@ class MCPServersParams:
             args=server_params.args,
             env=server_params.env,
         )
+    
+    def update_server_path(self, server_name: str, server_path: str) -> None:
+        self._servers_params[server_name].cwd = server_path
