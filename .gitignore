@@ -40,4 +40,9 @@ __pycache__/
 
 # MongoDB
 *.lock 
-mcp_config.yaml
+
+# User config
+.mcphub.yaml
+
+# cursor
+.cursor/

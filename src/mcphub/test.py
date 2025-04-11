@@ -1,15 +1,14 @@
 import asyncio
-from dataclasses import asdict  # Add this import
-from adapter import MCPHubAdapter
-from agents import Agent, Runner, trace
-from agents.mcp import MCPServer, MCPServerStdio
+from dataclasses import asdict
+from mcphub import MCPHub  # Import MCPHub from mcphub.py
+from agents.mcp import MCPServerStdio
 import json
 
-adapter = MCPHubAdapter().from_config("mcp_config.yaml", cache_path="cache")
-azure_devops_server = adapter.get_server("azure-devops-mcp")
+# Create an instance of MCPHub, which automatically loads the configuration
+mcphub = MCPHub()
+azure_devops_server = mcphub.get_server("azure-devops-mcp")
 
 print(f"Using MCP server: {azure_devops_server}")
-
 
 async def main():
     async with MCPServerStdio(
@@ -23,7 +22,5 @@ async def main():
         print("Tools available:")
         print(json.dumps(tools_dict, indent=2))
 
-
 if __name__ == "__main__":
-
     asyncio.run(main())

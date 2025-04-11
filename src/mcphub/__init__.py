@@ -7,5 +7,10 @@ This package provides tools for managing and interacting with MCP servers.
 __version__ = "0.1.0"
 
 from mcphub.adapter.adapter import MCPHubAdapter, MCPServerConfig
-from mcphub.hub.mcp_hub import setup_all_servers, store_mcp, list_tools
-from mcphub.hub.mcp_controller import list_servers, get_server
+from mcphub.mcphub import MCPHub
+
+__all__ = [
+    "MCPHubAdapter",
+    "MCPServerConfig",
+    "MCPHub"
+]
