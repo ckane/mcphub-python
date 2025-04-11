@@ -1,6 +1,0 @@
-azure-devops-mcp:
-  - name: tiberriver256/mcp-server-azure-devops
-    env:
-      AZURE_DEVOPS_ORG_URL: ${AZURE_DEVOPS_ORG_URL}
-      AZURE_DEVOPS_AUTH_METHOD: azure-identity
-      AZURE_DEVOPS_DEFAULT_PROJECT: ${AZURE_DEVOPS_DEFAULT_PROJECT}
