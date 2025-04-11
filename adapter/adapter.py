@@ -1,22 +1,27 @@
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Optional
 from pathlib import Path
 import json
 import yaml
 import os
-import subprocess
 from pathlib import Path
-
-# from mcp_hub import setup_all_servers, store_mcp, list_tools as hub_list_tools
-from mcp_server_config import MCPServerConfig, list_servers, validate_server_env
-# from mcp_controller import get_server, get_tool, list_servers as list_db_servers
 from .base import BaseAdapter
+from dataclasses import dataclass
+
+@dataclass
+class MCPServerConfig:
+    name: str
+    command: str
+    args: List[str]
+    env: Dict[str, str]
+    description: Optional[str] = None
+    tags: Optional[List[str]] = None
 
 class MCPHubAdapter(BaseAdapter):
     """Adapter for loading tools from MCP Hub."""
     
     def __init__(self):
         self.cache_path = None
-        self.servers = []
+        self.servers: List[MCPServerConfig] = []
 
     def from_config(self, config_path: str, cache_path: str = None) -> 'MCPHubAdapter':
         # Create cache directory if it doesn't exist
@@ -27,33 +32,44 @@ class MCPHubAdapter(BaseAdapter):
         # Load the configuration
         with open(config_path, 'r') as f:
             config = yaml.safe_load(f)
+        
+        # Load server commands if available
+        commands_path = Path(__file__).parent / "mcp_server_commands.json"
+        if commands_path.exists():
+            with open(commands_path, 'r') as f:
+                server_commands = json.load(f)
+        else:
+            server_commands = {}
             
         # Process each server in the config
         for server_type, servers in config.items():
             for server in servers:
                 repo_name = server.get('name')
                 if repo_name:
-                    # Clone repository if cache path is provided
-                    if self.cache_path:
-                        repo_dir = self.cache_path / repo_name.split('/')[-1]
-                        if not repo_dir.exists():
-                            print(f"Cloning {repo_name} into {repo_dir}")
-                            subprocess.run(
-                                ["git", "clone", f"https://github.com/{repo_name}.git", str(repo_dir)],
-                                check=True
-                            )
-                        else:
-                            print(f"Repository {repo_name} already exists at {repo_dir}")
+                    if repo_name not in server_commands:
+                        raise ValueError(
+                            f"Server '{repo_name}' not found in mcp_server_commands.json. "
+                            f"Please add command and args configuration for this server."
+                        )
                     
-                    # Store server information
-                    self.servers.append({
-                        'type': server_type,
+                    # Get command details from the commands file
+                    cmd_info = server_commands[repo_name]
+                    
+                    # Store server information with command details from commands file
+                    server_info = {
                         'name': repo_name,
-                        'env': server.get('env', {})
-                    })
+                        'env': server.get('env', {}),
+                        'command': cmd_info.get('command'),
+                        'args': cmd_info.get('args'),
+                        'description': cmd_info.get('description'),
+                        'tags': cmd_info.get('tags')
+                    }
+                    
+                    self.servers.append(MCPServerConfig(**server_info))
         
         return self
     
     @property
-    def get_server(self) -> List[MCPServerConfig]:
-        pass
+    def get_servers(self) -> List[MCPServerConfig]:
+        """Return the list of server configurations."""
+        return self.servers

@@ -40,3 +40,4 @@ __pycache__/
 
 # MongoDB
 *.lock 
+mcp_config.yaml
