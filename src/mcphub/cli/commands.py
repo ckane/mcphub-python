@@ -4,7 +4,7 @@ import asyncio
 import argparse
 import json
 from pathlib import Path
-from mcphub.hub.mcp_hub import setup_all_servers, store_mcp, list_tools
+from mcphub.hub.utilities import setup_all_servers, store_mcp, list_tools
 from mcphub.hub.mcp_server_config import list_servers
 from mcphub.adapter.adapter import MCPHubAdapter
 

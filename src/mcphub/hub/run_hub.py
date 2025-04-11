@@ -1,5 +1,5 @@
 import asyncio
-from mcp_hub import setup_all_servers, store_mcp, list_servers, list_tools
+from mcphub.hub.utilities import setup_all_servers, store_mcp, list_servers, list_tools
 
 
 async def main():
