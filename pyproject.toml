@@ -1,18 +1,39 @@
-[project]
-name = "vista-mcp-hub"
-version = "0.1.0"
-description = ""
-authors = [
-    {name = "Your Name",email = "you@example.com"}
-]
-readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "openai-agents (>=0.0.9,<0.0.10)",
-    "motor (>=3.7.0,<4.0.0)"
-]
-
-
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcphub"
+version = "0.1.0"
+description = "A hub for Model Context Protocol (MCP) servers"
+readme = "README.md"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "motor>=3.7.0,<4.0.0",
+    "python-dotenv>=1.0.0,<2.0.0",
+    "build (>=1.2.2.post1,<2.0.0)",
+    "twine (>=6.1.0,<7.0.0)",
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "openai-agents (>=0.0.9,<0.0.10)",
+]
+requires-python = ">=3.10"
+
+[project.urls]
+Documentation = "https://github.com/yourusername/mcphub#readme"
+Issues = "https://github.com/yourusername/mcphub/issues"
+Source = "https://github.com/yourusername/mcphub"
+
+[project.scripts]
+mcphub = "mcphub.cli.commands:main"

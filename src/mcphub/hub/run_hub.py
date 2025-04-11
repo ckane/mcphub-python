@@ -1,13 +1,14 @@
 import asyncio
-from mcp_hub import setup_all_servers, store_mcp, list_servers, list_tools
+from mcphub.hub.utilities import setup_all_servers, store_mcp, list_servers, list_tools
+
 
 async def main():
     # Setup all MCP servers
     await setup_all_servers()
-    
+
     # Store MCP server and tool data in MongoDB
     await store_mcp()
-    
+
     # Display stored servers and tools
     servers = list_servers()
     print("\nStored Servers:")
@@ -16,7 +17,7 @@ async def main():
         print(f"Description: {server.description}")
         print(f"Tags: {', '.join(server.tags)}")
         print(f"Command: {server.command}")
-    
+
     tools = await list_tools()
     print("\nTools:")
     for server_name, server_tools in tools.items():
@@ -26,5 +27,6 @@ async def main():
             print(f"Description: {tool.description}")
             print()
 
+
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())
