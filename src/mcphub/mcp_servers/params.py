@@ -1,9 +1,11 @@
-from dataclasses import dataclass
-from typing import Dict, List, Optional
-from pathlib import Path
 import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, List, Optional
+
 import yaml
 from mcp import StdioServerParameters
+
 
 @dataclass
 class MCPServerConfig:
@@ -73,3 +75,11 @@ class MCPServersParams:
     
     def get_server_params(self, server_name: str) -> MCPServerConfig:
         return self._servers_params.get(server_name)
+    
+    def get_stdio_server_params(self, server_name: str) -> StdioServerParameters:
+        server_params = self.get_server_params(server_name)
+        return StdioServerParameters(
+            command=server_params.command,
+            args=server_params.args,
+            env=server_params.env,
+        )

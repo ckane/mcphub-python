@@ -1,7 +1,9 @@
-from typing import Dict, Optional
-from pathlib import Path
 from dataclasses import dataclass, field
-from mcp_servers import MCPServersParams, MCPServerConfig
+from pathlib import Path
+from typing import Optional
+
+from mcp_servers import MCPServerConfig, MCPServersParams
+
 
 @dataclass
 class MCPHub:
