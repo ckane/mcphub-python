@@ -46,3 +46,6 @@ __pycache__/
 
 # cursor
 .cursor/
+
+# cache dir
+.mcphub_cache/

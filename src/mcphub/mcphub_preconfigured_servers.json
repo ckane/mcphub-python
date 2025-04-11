@@ -2,7 +2,15 @@
     "tiberriver256/mcp-server-azure-devops": {
         "command": "npx",
         "args": ["-y", "@tiberriver256/mcp-server-azure-devops"],
-        "description": "Run the MCP server for Azure DevOps",
+        "description": "Azure devops MCP server",
         "tags": ["mcp-server", "azure-devops"]
+    },
+    "mashriram/azure_mcp_server": {
+        "command": "uv",
+        "args": ["run", "mcp_server_azure_cmd"],
+        "description": "Azure storage MCP server",
+        "tags": ["mcp-server", "azure-storage"],
+        "repo_url": "https://github.com/mashriram/azure_mcp_server",
+        "setup_script": "uv pip install -e ."
     }
 }
