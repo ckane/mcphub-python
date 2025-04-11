@@ -6,7 +6,7 @@ from agents.mcp import MCPServerStdio
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
-from mcp_server_config import (
+from src.mcphub.hub.mcp_server_config import (
     MCPServerConfig,
     list_servers,
     validate_server_env,
