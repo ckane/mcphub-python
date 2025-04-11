@@ -1,0 +1,8 @@
+{
+    "tiberriver256/mcp-server-azure-devops": {
+        "command": "npx",
+        "args": ["-y", "@tiberriver256/mcp-server-azure-devops"],
+        "description": "Run the MCP server for Azure DevOps",
+        "tags": ["mcp-server", "azure-devops"]
+    }
+}
