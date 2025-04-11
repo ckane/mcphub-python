@@ -73,11 +73,11 @@ class MCPServersParams:
                 )
         return servers
     
-    def get_server_params(self, server_name: str) -> MCPServerConfig:
+    def retrieve_server_params(self, server_name: str) -> MCPServerConfig:
         return self._servers_params.get(server_name)
     
-    def get_stdio_server_params(self, server_name: str) -> StdioServerParameters:
-        server_params = self.get_server_params(server_name)
+    def convert_to_stdio_params(self, server_name: str) -> StdioServerParameters:
+        server_params = self.retrieve_server_params(server_name)
         return StdioServerParameters(
             command=server_params.command,
             args=server_params.args,

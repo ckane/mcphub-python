@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
+from mcp import StdioServerParameters
+
 from mcp_servers import MCPServerConfig, MCPServersParams
 
 
@@ -21,5 +23,8 @@ class MCPHub:
                 return str(config_path)
         raise FileNotFoundError("Configuration file '.mcphub.yaml' not found in the project root or any parent directories.")
 
-    def get_server(self, mcp_name: str) -> Optional[MCPServerConfig]:
-        return self.servers_params.get_server_params(mcp_name)
+    def fetch_server_params(self, mcp_name: str) -> Optional[MCPServerConfig]:
+        return self.servers_params.retrieve_server_params(mcp_name)
+    
+    def fetch_stdio_server_config(self, mcp_name: str) -> Optional[StdioServerParameters]:
+        return self.servers_params.convert_to_stdio_params(mcp_name)

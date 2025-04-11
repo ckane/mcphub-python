@@ -6,7 +6,7 @@ import json
 
 # Create an instance of MCPHub, which automatically loads the configuration
 mcphub = MCPHub()
-azure_devops_server = mcphub.get_server("azure-devops-mcp")
+azure_devops_server = mcphub.fetch_server_params("azure-devops-mcp")
 
 print(f"Using MCP server: {azure_devops_server}")
 
