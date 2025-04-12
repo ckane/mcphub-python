@@ -1,9 +1,8 @@
-import os
 import subprocess
 from pathlib import Path
-from typing import List, Optional
 
 from .params import MCPServerConfig, MCPServersParams
+
 
 class SetupError(Exception):
     """Raised when there's an error during server setup."""
@@ -20,14 +19,20 @@ class MCPServers:
         """Get the cache directory path, creating it if it doesn't exist."""
         current_dir = Path.cwd()
         for parent in [current_dir] + list(current_dir.parents):
-            if (parent / ".mcphub.yaml").exists():
+            if (parent / ".mcphub.json").exists():
                 cache_dir = parent / ".mcphub_cache"
                 cache_dir.mkdir(exist_ok=True)
                 return cache_dir
-        raise FileNotFoundError("Could not find project root directory with .mcphub.yaml")
+        raise FileNotFoundError("Could not find project root directory with .mcphub.json")
 
     def _clone_repository(self, repo_url: str, repo_name: str) -> Path:
         """Clone a repository into the cache directory."""
+        if not repo_url:
+            raise SetupError(
+                "Repository URL is required but was not provided. "
+                "Please configure the repo_url field in .mcphub.json for this server."
+            )
+            
         repo_dir = self.cache_dir / repo_name.split('/')[-1]
         
         if repo_dir.exists():
@@ -78,18 +83,18 @@ class MCPServers:
 
     def _update_server_path(self, server_config: MCPServerConfig, repo_dir: Path) -> None:
         """Update the server_path in the server configuration."""
-        self.servers_params.update_server_path(server_config.name, str(repo_dir))
-        print(f"Updated server path for {server_config.name}: {repo_dir}")
+        self.servers_params.update_server_path(server_config.package_name, str(repo_dir))
+        print(f"Updated server path for {server_config.package_name}: {repo_dir}")
 
     def setup_server(self, server_config: MCPServerConfig) -> None:
         """Set up a single server if it has repo_url and setup_script."""
         if not (server_config.repo_url and server_config.setup_script):
-            print(f"Skipping setup for {server_config.name}: No repo_url or setup_script specified")
+            print(f"Skipping setup for {server_config.package_name}: No repo_url or setup_script specified")
             return
 
         try:
             # Clone the repository
-            repo_dir = self._clone_repository(server_config.repo_url, server_config.name)
+            repo_dir = self._clone_repository(server_config.repo_url, server_config.package_name)
             
             # Run setup script
             if repo_dir.exists():
@@ -100,7 +105,7 @@ class MCPServers:
                 raise SetupError(f"Setup script not found: {repo_dir}")
 
         except (SetupError, FileNotFoundError) as e:
-            print(f"Error setting up server {server_config.name}: {str(e)}")
+            print(f"Error setting up server {server_config.package_name}: {str(e)}")
             raise
 
     def _setup_all_servers(self) -> None:
@@ -111,7 +116,7 @@ class MCPServers:
             try:
                 self.setup_server(server_config)
             except Exception as e:
-                print(f"Failed to set up server {server_config.name}: {str(e)}")
+                print(f"Failed to set up server {server_config.package_name}: {str(e)}")
                 # Continue with other servers even if one fails
                 continue
 

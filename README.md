@@ -28,7 +28,7 @@ mcphub list-tools
 mcphub list-tools --server azure-devops
 
 # Use the MCPHubAdapter
-mcphub adapter --config mcp_config.yaml --server azure-devops-mcp
+mcphub adapter --config mcp_config.json --server azure-devops-mcp
 ```
 
 ### Using in code
@@ -48,7 +48,7 @@ async def init():
     print(f"Available tools: {tools}")
     
     # Use the adapter to get a specific server
-    adapter = MCPHubAdapter().from_config("mcp_config.yaml", cache_path="cache")
+    adapter = MCPHubAdapter().from_config("mcp_config.json", cache_path="cache")
     server = adapter.get_server("azure-devops-mcp")
     
     if server:

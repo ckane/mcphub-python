@@ -6,14 +6,14 @@ import json
 
 # Create an instance of MCPHub, which automatically loads the configuration
 mcphub = MCPHub()
-azure_devops_server = mcphub.fetch_server_params("azure-storage-mcp")
+sequential_thinking_server = mcphub.fetch_server_params("azure-storage-mcp")
 
-print(f"Using MCP server: {azure_devops_server}")
+print(f"Using MCP server: {sequential_thinking_server}")
 
 async def main():
     async with MCPServerStdio(
         cache_tools_list=True,  # Cache the tools list, for demonstration
-        params=asdict(azure_devops_server),  # Use the MCP server configuration
+        params=asdict(sequential_thinking_server),  # Use the MCP server configuration
     ) as server:
         tools = await server.list_tools()
         tools_dict = [
