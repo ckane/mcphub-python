@@ -117,6 +117,46 @@ if __name__ == "__main__":
 
 ## Features
 
+### Server Configuration
+
+- **JSON-based Configuration**: Simple `.mcphub.json` configuration file
+- **Environment Variable Support**: Use environment variables in configuration
+- **Predefined Servers**: Access to a growing list of pre-configured MCP servers
+- **Custom Server Support**: Easy integration of custom MCP servers
+
+Configure your MCP servers in `.mcphub.json`:
+
+```json
+{
+    "mcpServers": {
+        // TypeScript-based MCP server using NPX
+        "sequential-thinking-mcp": {
+            "package_name": "smithery-ai/server-sequential-thinking",  // NPM package name
+            "command": "npx",                                         // Command to run server
+            "args": [                                                // Command arguments
+                "-y",
+                "@smithery/cli@latest",
+                "run",
+                "@smithery-ai/server-sequential-thinking"
+            ]
+        },
+        // Python-based MCP server from GitHub
+        "azure-storage-mcp": {
+            "package_name": "mashriram/azure_mcp_server",            // Package identifier
+            "repo_url": "https://github.com/mashriram/azure_mcp_server", // GitHub repository
+            "command": "uv",                                         // Python package manager
+            "args": ["run", "mcp_server_azure_cmd"],                // Run command
+            "setup_script": "uv pip install -e .",                  // Installation script
+            "env": {                                                // Environment variables
+                "AZURE_STORAGE_CONNECTION_STRING": "${AZURE_STORAGE_CONNECTION_STRING}",
+                "AZURE_STORAGE_CONTAINER_NAME": "${AZURE_STORAGE_CONTAINER_NAME}",
+                "AZURE_STORAGE_BLOB_NAME": "${AZURE_STORAGE_BLOB_NAME}"
+            }
+        }
+    }
+}
+```
+
 ### MCP Server Installation and Management
 
 - **Flexible Server Setup**: Supports both TypeScript and Python-based MCP servers
@@ -139,12 +179,36 @@ Provides adapters for popular AI frameworks:
 - LangChain
 - Autogen
 
-### Server Configuration
+```python
+from mcphub import MCPHub
 
-- **JSON-based Configuration**: Simple `.mcphub.json` configuration file
-- **Environment Variable Support**: Use environment variables in configuration
-- **Predefined Servers**: Access to a growing list of pre-configured MCP servers
-- **Custom Server Support**: Easy integration of custom MCP servers
+async def framework_examples():
+    hub = MCPHub()
+    
+    # 1. OpenAI Agents Integration
+    async with hub.fetch_openai_mcp_server(
+        mcp_name="sequential-thinking-mcp",
+        cache_tools_list=True
+    ) as server:
+        # Use server with OpenAI agents
+        agent = Agent(
+            name="Assistant",
+            mcp_servers=[server]
+        )
+    
+    # 2. LangChain Tools Integration
+    langchain_tools = await hub.fetch_langchain_mcp_tools(
+        mcp_name="sequential-thinking-mcp",
+        cache_tools_list=True
+    )
+    # Use tools with LangChain
+    
+    # 3. Autogen Adapters Integration
+    autogen_adapters = await hub.fetch_autogen_mcp_adapters(
+        mcp_name="sequential-thinking-mcp"
+    )
+    # Use adapters with Autogen
+```
 
 ### Tool Management
 
@@ -152,11 +216,35 @@ Provides adapters for popular AI frameworks:
 - **Tool Caching**: Optional caching of tool lists for improved performance
 - **Framework-specific Adapters**: Convert MCP tools to framework-specific formats
 
+Discover and manage MCP server tools:
+
+```python
+from mcphub import MCPHub
+
+async def tool_management():
+    hub = MCPHub()
+    
+    # List all tools from a specific MCP server
+    tools = await hub.list_tools(mcp_name="sequential-thinking-mcp")
+    
+    # Print tool information
+    for tool in tools:
+        print(f"Tool Name: {tool.name}")
+        print(f"Description: {tool.description}")
+        print(f"Parameters: {tool.parameters}")
+        print("---")
+    
+    # Tools can be:
+    # - Cached for better performance using cache_tools_list=True
+    # - Converted to framework-specific formats automatically
+    # - Used directly with AI frameworks through adapters
+```
+
 ## MCPHub: High-Level Overview
 
 MCPHub simplifies the integration of Model Context Protocol (MCP) servers into AI applications through four main components:
 
-![MCPHub Architecture](https://raw.githubusercontent.com/Cognitive-Stacks/mcphub/refs/heads/write_docs/docs/simple_mcphub_work.png)
+![MCPHub Architecture](./docs/simple_mcphub_work.png)
 
 ### Core Components
 

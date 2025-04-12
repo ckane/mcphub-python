@@ -69,3 +69,15 @@ class MCPHub:
             StdioMcpToolAdapter: The configured MCP adapter
         """
         return await self.servers.make_autogen_mcp_adapters(mcp_name)
+    
+    async def list_tools(self, mcp_name: str) -> List[BaseTool]:
+        """
+        List all tools from an MCP server.
+        
+        Args:
+            mcp_name: The name of the MCP server configuration to use
+
+        Returns:
+            List[BaseTool]: List of tools provided by the MCP server
+        """
+        return await self.servers.list_tools(mcp_name)
