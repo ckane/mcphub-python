@@ -1,59 +1,214 @@
 # MCPHub
 
-A hub for Model Context Protocol (MCP) servers that enables you to manage and run MCP servers locally.
+MCPHub is an embeddable Model Context Protocol (MCP) solution for AI services. It enables seamless integration of MCP servers into any AI framework, allowing developers to easily configure, set up, and manage MCP servers within their applications. Whether you're using OpenAI Agents, LangChain, or Autogen, MCPHub provides a unified way to connect your AI services with MCP tools and resources.
 
-## Installation
+## Quick Start
 
+### Prerequisites
+
+Ensure you have the following tools installed:
 ```bash
+# Install uv (Python package manager)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install git (for repository cloning)
+sudo apt-get install git  # Ubuntu/Debian
+brew install git         # macOS
+
+# Install npx (comes with Node.js)
+npm install -g npx
+
+# Install MCPHub
 pip install mcphub
 ```
 
-## Usage
+### Configuration
 
-### Command Line Interface
+Create a `.mcphub.json` file in your project root:
 
-MCPHub comes with a command-line interface for common operations:
-
-```bash
-# Set up all configured MCP servers
-mcphub setup
-
-# List available MCP servers
-mcphub list-servers
-
-# List tools from all MCP servers
-mcphub list-tools
-
-# List tools from a specific server
-mcphub list-tools --server azure-devops
-
-# Use the MCPHubAdapter
-mcphub adapter --config mcp_config.json --server azure-devops-mcp
+```json
+{
+    "mcpServers": {
+        "sequential-thinking-mcp": {
+            "package_name": "smithery-ai/server-sequential-thinking",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@smithery/cli@latest",
+                "run",
+                "@smithery-ai/server-sequential-thinking"
+            ]
+        }
+    }
+}
 ```
 
-### Using in code
+### Usage with OpenAI Agents
 
 ```python
 import asyncio
-from mcphub import MCPHubAdapter, setup_all_servers, store_mcp, list_tools
-from dataclasses import asdict
+import json
+from agents import Agent, Runner
+from mcphub import MCPHub
 
-# Initialize and set up servers
-async def init():
-    await setup_all_servers()
-    await store_mcp()
+async def main():
+    """
+    Example of using MCPHub to integrate MCP servers with OpenAI Agents.
     
-    # List all available tools
-    tools = await list_tools()
-    print(f"Available tools: {tools}")
+    This example demonstrates:
+    1. Initializing MCPHub
+    2. Fetching and using an MCP server
+    3. Listing available tools
+    4. Creating and running an agent with MCP tools
+    """
     
-    # Use the adapter to get a specific server
-    adapter = MCPHubAdapter().from_config("mcp_config.json", cache_path="cache")
-    server = adapter.get_server("azure-devops-mcp")
+    # Step 1: Initialize MCPHub
+    # MCPHub will automatically:
+    # - Find .mcphub.json in your project
+    # - Load server configurations
+    # - Set up servers (clone repos, run setup scripts if needed)
+    hub = MCPHub()
     
-    if server:
-        print(f"Server config: {server}")
+    # Step 2: Create an MCP server instance using async context manager
+    # Parameters:
+    # - mcp_name: The name of the server from your .mcphub.json
+    # - cache_tools_list: Cache the tools list for better performance
+    async with hub.fetch_openai_mcp_server(
+        mcp_name="sequential-thinking-mcp",
+        cache_tools_list=True
+    ) as server:
+        # Step 3: List available tools from the MCP server
+        # This shows what capabilities are available to your agent
+        tools = await server.list_tools()
+        
+        # Pretty print the tools for better readability
+        tools_dict = [
+            dict(tool) if hasattr(tool, "__dict__") else tool for tool in tools
+        ]
+        print("Available MCP Tools:")
+        print(json.dumps(tools_dict, indent=2))
 
-# Run the async function
-asyncio.run(init())
+        # Step 4: Create an OpenAI Agent with MCP server
+        # The agent can now use all tools provided by the MCP server
+        agent = Agent(
+            name="Assistant",
+            instructions="Use the available tools to accomplish the given task",
+            mcp_servers=[server]  # Provide the MCP server to the agent
+        )
+        
+        # Step 5: Run your agent with a complex task
+        # The agent will automatically have access to all MCP tools
+        complex_task = """Please help me analyze the following complex problem: 
+                      We need to design a new feature for our product that balances user privacy 
+                      with data collection for improving the service. Consider the ethical implications, 
+                      technical feasibility, and business impact. Break down your thinking process 
+                      step by step, and provide a detailed recommendation with clear justification 
+                      for each decision point."""
+        
+        # Execute the task and get the result
+        result = await Runner.run(agent, complex_task)
+        print("\nAgent Response:")
+        print(result)
+
+if __name__ == "__main__":
+    # Run the async main function
+    asyncio.run(main())
 ```
+
+## Features
+
+### MCP Server Installation and Management
+
+- **Flexible Server Setup**: Supports both TypeScript and Python-based MCP servers
+- **Multiple Installation Sources**:
+  - NPM packages via `npx`
+  - Python packages via GitHub repository URLs
+  - Local development servers
+- **Automatic Setup**: Handles repository cloning, dependency installation, and server initialization
+
+### Transport Support
+
+- **stdio Transport**: Run MCP servers as local subprocesses
+- **Automatic Path Management**: Manages server paths and working directories
+- **Environment Variable Handling**: Configurable environment variables per server
+
+### Framework Integration
+
+Provides adapters for popular AI frameworks:
+- OpenAI Agents
+- LangChain
+- Autogen
+
+### Server Configuration
+
+- **JSON-based Configuration**: Simple `.mcphub.json` configuration file
+- **Environment Variable Support**: Use environment variables in configuration
+- **Predefined Servers**: Access to a growing list of pre-configured MCP servers
+- **Custom Server Support**: Easy integration of custom MCP servers
+
+### Tool Management
+
+- **Tool Discovery**: Automatically list and manage available tools from MCP servers
+- **Tool Caching**: Optional caching of tool lists for improved performance
+- **Framework-specific Adapters**: Convert MCP tools to framework-specific formats
+
+## MCPHub: High-Level Overview
+
+MCPHub simplifies the integration of Model Context Protocol (MCP) servers into AI applications through four main components:
+
+![MCPHub Architecture](https://raw.githubusercontent.com/Cognitive-Stacks/mcphub/refs/heads/master/docs/simple_mcphub_work.png)
+
+### Core Components
+
+1. **Params Hub**
+   - Manages configurations from `.mcphub.json`
+   - Defines which MCP servers to use and how to set them up
+   - Stores server parameters like commands, arguments, and environment variables
+
+2. **MCP Servers Manager**
+   - Handles server installation and setup
+   - Supports two types of servers:
+     * TypeScript-based servers (installed via npx)
+     * Python-based servers (installed via uv from GitHub)
+   - Manages server lifecycle and environment
+
+3. **MCP Client**
+   - Establishes communication with MCP servers
+   - Uses stdio transport for server interaction
+   - Handles two main operations:
+     * `list_tools`: Discovers available server tools
+     * `call_tool`: Executes server tools
+
+4. **Framework Adapters**
+   - Converts MCP tools to framework-specific formats
+   - Supports multiple AI frameworks:
+     * OpenAI Agents
+     * LangChain
+     * Autogen
+
+### Workflow
+
+1. **Configuration & Setup**
+   - Params Hub reads configuration
+   - Servers Manager sets up required servers
+   - Servers start and become available
+
+2. **Communication**
+   - MCP Client connects to servers via stdio
+   - Tools are discovered and made available
+   - Requests and responses flow between client and server
+
+3. **Integration**
+   - Framework adapters convert MCP tools
+   - AI applications use adapted tools through their preferred framework
+   - Tools are executed through the established communication channel
+
+This architecture provides a seamless way to integrate MCP capabilities into any AI application while maintaining clean separation of concerns and framework flexibility.
+
+## Contributing
+
+We welcome contributions! Please check out our [Contributing Guide](CONTRIBUTING.md) for guidelines on how to proceed.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
