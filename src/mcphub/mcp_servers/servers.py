@@ -27,6 +27,12 @@ class MCPServers:
 
     def _clone_repository(self, repo_url: str, repo_name: str) -> Path:
         """Clone a repository into the cache directory."""
+        if not repo_url:
+            raise SetupError(
+                "Repository URL is required but was not provided. "
+                "Please configure the repo_url field in .mcphub.json for this server."
+            )
+            
         repo_dir = self.cache_dir / repo_name.split('/')[-1]
         
         if repo_dir.exists():
