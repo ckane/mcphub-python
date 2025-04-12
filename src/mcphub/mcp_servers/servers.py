@@ -1,12 +1,12 @@
 import subprocess
 from pathlib import Path
+from typing import AsyncGenerator, Optional
+
+from agents.mcp import MCPServerStdio, MCPServerStdioParams
 
 from .params import MCPServerConfig, MCPServersParams
+from .exceptions import ServerConfigNotFoundError, SetupError
 
-
-class SetupError(Exception):
-    """Raised when there's an error during server setup."""
-    pass
 
 class MCPServers:
     def __init__(self, servers_params: MCPServersParams):
@@ -121,3 +121,34 @@ class MCPServers:
                 continue
 
         print("Completed server setup process")
+
+    def make_openai_mcp_server(self, mcp_name: str, cache_tools_list: bool = True) -> MCPServerStdio:
+        """
+        Create and return an OpenAI MCP server for the given MCP name.
+        
+        Args:
+            mcp_name: The name of the MCP server configuration to use
+            cache_tools_list: Whether to cache the tools list (default: True)
+            
+        Returns:
+            MCPServerStdio: The configured MCP server
+            
+        Raises:
+            ServerConfigNotFoundError: If the server configuration is not found
+        """
+        server_config = self.servers_params.retrieve_server_params(mcp_name)
+        if not server_config:
+            raise ServerConfigNotFoundError(f"Server configuration not found for '{mcp_name}'")
+
+        # Convert server config to StdioServerParameters
+        server_params = MCPServerStdioParams(
+            command=server_config.command,
+            args=server_config.args,
+            env=server_config.env,
+            cwd=server_config.cwd
+        )
+
+        return MCPServerStdio(
+            params=server_params,
+            cache_tools_list=cache_tools_list
+        )

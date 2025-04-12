@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import AsyncGenerator, Optional
 
+from agents.mcp import MCPServerStdio
 from mcp import StdioServerParameters
-
-from mcp_servers import MCPServerConfig, MCPServersParams, MCPServers
+from mcp_servers import MCPServerConfig, MCPServers, MCPServersParams
 
 
 @dataclass
@@ -29,3 +29,16 @@ class MCPHub:
     
     def fetch_stdio_server_config(self, mcp_name: str) -> Optional[StdioServerParameters]:
         return self.servers_params.convert_to_stdio_params(mcp_name)
+    
+    def fetch_openai_mcp_server(self, mcp_name: str, cache_tools_list: bool = True) -> MCPServerStdio:
+        """
+        Fetch and return an OpenAI MCP server instance.
+        
+        Args:
+            mcp_name: The name of the MCP server to fetch
+            cache_tools_list: Whether to cache the tools list
+            
+        Returns:
+            MCPServerStdio: The configured MCP server
+        """
+        return self.servers.make_openai_mcp_server(mcp_name, cache_tools_list)
