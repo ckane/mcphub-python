@@ -192,3 +192,16 @@ class MCPServers:
                 adapter = await StdioMcpToolAdapter.from_server_params(server_params, tool.name)
                 adapters.append(adapter)
         return adapters
+    
+    async def list_tools(self, mcp_name: str) -> List[BaseTool]:
+        """
+        List all tools from an MCP server.
+        
+        Args:
+            mcp_name: The name of the MCP server configuration to use
+
+        Returns:
+            List[BaseTool]: List of tools provided by the MCP server
+        """
+        async with self.make_openai_mcp_server(mcp_name, cache_tools_list=True) as server:
+            return await server.list_tools()    
