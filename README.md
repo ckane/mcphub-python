@@ -156,7 +156,7 @@ Provides adapters for popular AI frameworks:
 
 MCPHub simplifies the integration of Model Context Protocol (MCP) servers into AI applications through four main components:
 
-![MCPHub Architecture](https://raw.githubusercontent.com/Cognitive-Stacks/mcphub/refs/heads/master/docs/simple_mcphub_work.png)
+![MCPHub Architecture](https://raw.githubusercontent.com/Cognitive-Stacks/mcphub/refs/heads/write_docs/docs/simple_mcphub_work.png)
 
 ### Core Components
 
