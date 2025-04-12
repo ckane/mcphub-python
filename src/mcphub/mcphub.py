@@ -6,7 +6,7 @@ from agents.mcp import MCPServerStdio
 from autogen_ext.tools.mcp import StdioMcpToolAdapter
 from langchain_core.tools import BaseTool
 from mcp import StdioServerParameters
-from mcp_servers import MCPServerConfig, MCPServers, MCPServersParams
+from .mcp_servers import MCPServerConfig, MCPServers, MCPServersParams
 
 
 @dataclass

@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mcphub"
-version = "0.1.0"
-description = "A hub for Model Context Protocol (MCP) servers"
+version = "0.1.2"
+description = "A Python package for managing and integrating Model Context Protocol (MCP) servers with AI frameworks like OpenAI Agents, LangChain, and Autogen"
 readme = "README.md"
 authors = [
     {name = "Hieu TRAN", email = "hieutrantrung.it@gmail.com"},
@@ -32,9 +32,9 @@ dependencies = [
 requires-python = "<4.0,>=3.10"
 
 [project.urls]
-Documentation = "https://github.com/yourusername/mcphub#readme"
-Issues = "https://github.com/yourusername/mcphub/issues"
-Source = "https://github.com/yourusername/mcphub"
+Documentation = "https://github.com/Cognitive-Stacks/mcphub"
+Issues = "https://github.com/Cognitive-Stacks/mcphub/issues"
+Source = "https://github.com/Cognitive-Stacks/mcphub"
 
 [project.scripts]
 mcphub = "mcphub.cli.commands:main"
