@@ -19,10 +19,10 @@ class MCPHub:
     def _find_config_path(self) -> str:
         current_dir = Path.cwd()
         for parent in [current_dir] + list(current_dir.parents):
-            config_path = parent / ".mcphub.yaml"
+            config_path = parent / ".mcphub.json"
             if config_path.exists():
                 return str(config_path)
-        raise FileNotFoundError("Configuration file '.mcphub.yaml' not found in the project root or any parent directories.")
+        raise FileNotFoundError("Configuration file '.mcphub.json' not found in the project root or any parent directories.")
 
     def fetch_server_params(self, mcp_name: str) -> Optional[MCPServerConfig]:
         return self.servers_params.retrieve_server_params(mcp_name)

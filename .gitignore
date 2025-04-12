@@ -42,7 +42,7 @@ __pycache__/
 *.lock 
 
 # User config
-.mcphub.yaml
+.mcphub.json
 
 # cursor
 .cursor/
