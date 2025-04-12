@@ -5,6 +5,8 @@ from typing import Dict, List, Optional
 
 from mcp import StdioServerParameters
 
+from .exceptions import ServerConfigNotFoundError
+
 
 @dataclass
 class MCPServerConfig:
@@ -18,10 +20,6 @@ class MCPServerConfig:
     setup_script: Optional[str] = None
     cwd: Optional[str] = None
     
-class ServerConfigNotFoundError(Exception):
-    """Raised when a server configuration is not found."""
-    pass
-
 class MCPServersParams:
     def __init__(self, config_path: str):
         self.config_path = config_path
