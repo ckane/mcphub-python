@@ -6,7 +6,7 @@ import json
 
 # Create an instance of MCPHub, which automatically loads the configuration
 mcphub = MCPHub()
-sequential_thinking_server = mcphub.fetch_server_params("sequential-thinking-mcp")
+sequential_thinking_server = mcphub.fetch_server_params("azure-storage-mcp")
 
 print(f"Using MCP server: {sequential_thinking_server}")
 

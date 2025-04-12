@@ -4,26 +4,5 @@
         "args": ["-y", "@tiberriver256/mcp-server-azure-devops"],
         "description": "Azure devops MCP server",
         "tags": ["mcp-server", "azure-devops"]
-    },
-    "mashriram/azure_mcp_server": {
-        "command": "uv",
-        "args": ["run", "mcp_server_azure_cmd"],
-        "description": "Azure storage MCP server",
-        "tags": ["mcp-server", "azure-storage"],
-        "repo_url": "https://github.com/mashriram/azure_mcp_server",
-        "setup_script": "uv pip install -e ."
-    },
-    "smithery-ai/server-sequential-thinking": {
-        "command": "npx",
-        "args": [
-            "-y",
-            "@smithery/cli@latest",
-            "run",
-            "@smithery-ai/server-sequential-thinking",
-            "--key",
-            "c7b8c042-faf8-4dd4-a8e0-a1dbc103e2ae"
-        ],
-        "description": "Sequential thinking server",
-        "tags": ["mcp-server", "sequential-thinking"]
     }
 }

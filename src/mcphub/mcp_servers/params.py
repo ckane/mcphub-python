@@ -58,7 +58,22 @@ class MCPServersParams:
         
         for mcp_name, server_config in config.items():
             package_name = server_config.get("package_name")
-            if package_name and predefined_servers_params.get(package_name):
+            
+            # Check if command and args are configured in user config
+            if "command" in server_config and "args" in server_config:
+                # Use configuration directly from .mcphub.json
+                servers[mcp_name] = MCPServerConfig(
+                    package_name=package_name,
+                    command=server_config["command"],
+                    args=server_config["args"],
+                    env=server_config.get("env", {}),
+                    description=server_config.get("description"),
+                    tags=server_config.get("tags"),
+                    repo_url=server_config.get("repo_url"),
+                    setup_script=server_config.get("setup_script")
+                )
+            # Fallback to predefined configuration
+            elif package_name and predefined_servers_params.get(package_name):
                 cmd_info = predefined_servers_params[package_name]
                 servers[mcp_name] = MCPServerConfig(
                     package_name=package_name,
@@ -72,8 +87,8 @@ class MCPServersParams:
                 )
             else:
                 raise ServerConfigNotFoundError(
-                    f"Server '{package_name}' not found in mcphub_preconfigured_servers.json. "
-                    f"Please add command and args configuration for this server."
+                    f"Server '{package_name}' must either have command and args configured in .mcphub.json "
+                    f"or be defined in mcphub_preconfigured_servers.json"
                 )
         return servers
     
