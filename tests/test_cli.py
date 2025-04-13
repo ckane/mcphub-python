@@ -108,15 +108,25 @@ class TestCliInit:
             config = json.load(f)
             assert config == utils.DEFAULT_CONFIG
 
-    def test_init_skips_when_config_exists(self, cli_env, capfd):
+    def test_init_skips_when_config_exists(self, cli_env, capfd, monkeypatch):
         """Test that 'init' command skips creation when config already exists."""
+        config_path = Path(cli_env["config_path"])
+
+        # Mock get_config_path to return our test config
+        def mock_get_config_path():
+            return config_path
+        monkeypatch.setattr(utils, "get_config_path", mock_get_config_path)
+
+        # Mock Path.exists for the specific config_path instance
+        config_path.exists = mock.Mock(return_value=True)
+
         # Execute init command
         args = mock.Mock()
         commands.init_command(args)
         
         # Verify output indicates config already exists
         out, _ = capfd.readouterr()
-        assert "already exists" in out
+        assert f"already exists" in out
 
 
 class TestCliAdd:
