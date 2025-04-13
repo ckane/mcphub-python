@@ -117,8 +117,10 @@ class TestCliInit:
             return config_path
         monkeypatch.setattr(utils, "get_config_path", mock_get_config_path)
 
-        # Mock Path.exists for the specific config_path instance
-        config_path.exists = mock.Mock(return_value=True)
+        # Mock Path.exists to return True
+        def mock_exists(self):
+            return True
+        monkeypatch.setattr(Path, "exists", mock_exists)
 
         # Execute init command
         args = mock.Mock()
