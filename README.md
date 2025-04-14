@@ -181,14 +181,14 @@ Configure your MCP servers in `.mcphub.json`:
 ### Framework Integration
 
 Provides adapters for popular AI frameworks:
-- OpenAI Agents
-- LangChain
-- Autogen
+- OpenAI Agents ([example](examples/with_openai.py))
+- LangChain ([example](examples/with_langchain.py))
+- Autogen ([example](examples/with_autogen.py))
 
 ```python
 from mcphub import MCPHub
 
-async def framework_examples():
+async def framework_quick_examples():
     hub = MCPHub()
     
     # 1. OpenAI Agents Integration
@@ -230,6 +230,9 @@ from mcphub import MCPHub
 async def tool_management():
     hub = MCPHub()
     
+    # List all servers
+    servers = hub.list_servers()
+
     # List all tools from a specific MCP server
     tools = await hub.list_tools(mcp_name="sequential-thinking-mcp")
     
