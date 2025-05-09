@@ -2,6 +2,13 @@
 
 MCPHub is an embeddable Model Context Protocol (MCP) solution for AI services. It enables seamless integration of MCP servers into any AI framework, allowing developers to easily configure, set up, and manage MCP servers within their applications. Whether you're using OpenAI Agents, LangChain, or Autogen, MCPHub provides a unified way to connect your AI services with MCP tools and resources.
 
+## Documentation
+
+- [CLI Documentation](src/mcphub/cli/README.md) - Command-line interface for managing MCP servers
+- [API Documentation](docs/api.md) - Python API reference
+- [Configuration Guide](docs/configuration.md) - Server configuration details
+- [Examples](docs/examples.md) - Usage examples and tutorials
+
 ## Quick Start
 
 ### Prerequisites
@@ -48,6 +55,33 @@ Create a `.mcphub.json` file in your project root:
     }
 }
 ```
+
+### Adding New MCP Servers
+
+You can add new MCP servers in two ways:
+
+1. **Manual Configuration**: Add the server configuration directly to your `.mcphub.json` file.
+
+2. **Automatic Configuration from GitHub**: Use the `add_server_from_repo` method to automatically configure a server from its GitHub repository:
+
+```python
+from mcphub import MCPHub
+
+# Initialize MCPHub
+hub = MCPHub()
+
+# Add a new server from GitHub
+hub.servers_params.add_server_from_repo(
+    server_name="my-server",
+    repo_url="https://github.com/username/repo"
+)
+```
+
+The automatic configuration:
+- Fetches the README from the GitHub repository
+- Uses OpenAI to analyze the README and extract the server configuration
+- Adds the configuration to your `.mcphub.json` file
+- Requires an OpenAI API key (set via `OPENAI_API_KEY` environment variable)
 
 ### Usage with OpenAI Agents
 
@@ -175,20 +209,66 @@ Configure your MCP servers in `.mcphub.json`:
 ### Transport Support
 
 - **stdio Transport**: Run MCP servers as local subprocesses
+- **SSE Transport**: Run MCP servers with Server-Sent Events (SSE) support using supergateway
 - **Automatic Path Management**: Manages server paths and working directories
 - **Environment Variable Handling**: Configurable environment variables per server
+
+#### Running Servers with SSE Support
+
+You can run MCP servers with SSE support using the `mcphub run` command:
+
+```bash
+# Basic usage with default settings
+mcphub run your-server-name --sse
+
+# Advanced usage with custom settings
+mcphub run your-server-name --sse \
+    --port 8000 \
+    --base-url http://localhost:8000 \
+    --sse-path /sse \
+    --message-path /message
+```
+
+SSE support is useful when you need to:
+- Connect to MCP servers from web applications
+- Use real-time communication with MCP servers
+- Integrate with clients that support SSE
+
+The SSE server provides two endpoints:
+- `/sse`: SSE endpoint for real-time updates
+- `/message`: HTTP endpoint for sending messages
+
+Example configuration in `.mcphub.json`:
+```json
+{
+    "mcpServers": {
+        "sequential-thinking-mcp": {
+            "package_name": "smithery-ai/server-sequential-thinking",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@smithery/cli@latest",
+                "run",
+                "@smithery-ai/server-sequential-thinking",
+                "--key",
+                "your-api-key"
+            ]
+        }
+    }
+}
+```
 
 ### Framework Integration
 
 Provides adapters for popular AI frameworks:
-- OpenAI Agents
-- LangChain
-- Autogen
+- OpenAI Agents ([example](examples/with_openai.py))
+- LangChain ([example](examples/with_langchain.py))
+- Autogen ([example](examples/with_autogen.py))
 
 ```python
 from mcphub import MCPHub
 
-async def framework_examples():
+async def framework_quick_examples():
     hub = MCPHub()
     
     # 1. OpenAI Agents Integration
@@ -230,6 +310,9 @@ from mcphub import MCPHub
 async def tool_management():
     hub = MCPHub()
     
+    # List all servers
+    servers = hub.list_servers()
+
     # List all tools from a specific MCP server
     tools = await hub.list_tools(mcp_name="sequential-thinking-mcp")
     
