@@ -102,19 +102,29 @@ class MCPServersParams:
         
         Return only the JSON configuration, nothing else."""
 
-        response = self.openai_client.responses.parse(
-            model="gpt-4o-mini",
-            input=[
-                {"role": "system", "content": "You are a helpful assistant that extracts MCP server configuration from READMEs."},
-                {"role": "user", "content": prompt}
-            ],
-            text_format=MCPServerConfigSchema
-        )
         try:
+            response = self.openai_client.responses.parse(
+                model="gpt-4o-mini",
+                input=[
+                    {"role": "system", "content": "You are a helpful assistant that extracts MCP server configuration from READMEs."},
+                    {"role": "user", "content": prompt}
+                ],
+                text_format=MCPServerConfigSchema
+            )
+            # Validate response structure
+            if not hasattr(response, "output_parsed") or not hasattr(response.output_parsed, "model_dump"):
+                raise ValueError("Unexpected OpenAI API response format")
             config = response.output_parsed.model_dump()
             return config
-        except json.JSONDecodeError:
-            raise ValueError("Failed to parse OpenAI response as JSON")
+        except json.JSONDecodeError as e:
+            # Log the problematic response content for debugging
+            raise ValueError(f"Failed to parse OpenAI response as JSON: {e}")
+        except openai.error.OpenAIError as e:
+            # Log OpenAI-specific errors
+            raise RuntimeError(f"OpenAI API error: {e}")
+        except Exception as e:
+            # Catch-all for any other unexpected exceptions
+            raise RuntimeError(f"Unexpected error while parsing OpenAI response: {e}")
 
     def add_server_from_repo(self, server_name: str, repo_url: str) -> None:
         """Add a new server configuration by analyzing its GitHub repository README."""
