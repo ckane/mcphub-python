@@ -181,7 +181,11 @@ class MCPServersParams:
             package_name = server_config.get("package_name")
             
             if not package_name:
-                raise ValueError(f"package_name is required for server {mcp_name}")
+                raise ValueError(
+                    f"Configuration for server '{mcp_name}' is missing the required 'package_name' field. "
+                    "As of the latest update, all server configurations must explicitly include a 'package_name'. "
+                    "Please update your configuration file to include this field."
+                )
             
             # Get command and args with defaults
             command = server_config.get("command", "npx")
