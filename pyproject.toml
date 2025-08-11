@@ -36,12 +36,12 @@ langchain = [
     "langchain-mcp-adapters (>=0.0.7,<0.0.8)",
 ]
 autogen = [
-    "autogen-ext[mcp] (>=0.5.1,<0.6.0)",
+    "autogen-ext[mcp] (>=0.5.1,<0.8.0)",
 ]
 all = [
     "openai-agents (>=0.0.9,<0.0.10)",
     "langchain-mcp-adapters (>=0.0.7,<0.0.8)",
-    "autogen-ext[mcp] (>=0.5.1,<0.6.0)",
+    "autogen-ext[mcp] (>=0.5.1,<0.8.0)",
 ]
 
 [project.urls]
